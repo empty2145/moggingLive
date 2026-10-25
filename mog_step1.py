@@ -1,16 +1,19 @@
+import time
 import cv2
 import mediapipe as mp
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
 
-mp_face_mesh = mp.solutions.face_mesh
-mp_drawing = mp.solutions.drawing_utils
+base_options = python.BaseOptions(model_asset_path="face_landmarker.task")
 
-face_mesh = mp_face_mesh.FaceMesh(
-    static_image_mode=False,
-    max_num_faces=1,
-    refine_landmarks=True,
-    min_detection_confidence=0.6,
+options = vision.FaceLandmarkerOptions(
+    base_options=base_options,
+    running_mode=vision.RunningMode.VIDEO,
+    num_faces=1,
+    min_face_detection_confidence=0.6,
     min_tracking_confidence=0.6,
 )
+
 
 cap = cv2.VideoCapture(0)
 
