@@ -76,7 +76,7 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
 
             #5. telemetry readout
             status_text = (
-                "STATE: MOGGING" IF is_mogging else "STATE: CHOPPED"
+                "STATE: MOGGING" if is_mogging else "STATE: CHOPPED"
             )
             cv2.putText(
                 frame,
