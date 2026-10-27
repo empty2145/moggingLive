@@ -42,10 +42,32 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
 
         #5. Draw all 478 landmarks
         if results.face_landmarks:
-            for face_landmarks in results.face_landmarks:
-                for lm in face_landmarks:
-                    cx, cy = int(lm.x * w), int(lm.y * h)
-                    cv2.circle(frame, (cx, cy), 1, (0, 255, 0), -1)
+
+            landmarks = results.face_landmarks[0]
+            #1. extract the coordinates
+
+            cheek_l = get_pixel_coords(landmarks[234], w, h)
+            cheek_r = get_pixel_coords(landmarks[454], w, h)
+            mouth_l = get_pixel_coords(landmarks[61], w, h)
+            mouth_r = get_pixel_coords(landmarks[291], w, h)
+
+            #2. euclidian distance sqrt((x2-x1)^2+(y2-y1)^2)
+            cheek_width = np.linalg.norm(cheek_r - cheek_l)
+            mouth_width = np.linalg.norm(mouth_r - mouth_l)
+
+            #3. ratio
+            mog_ratio = mouth_width / (cheek_width + 1e-6)
+            is_mogging = mog_ratio < mog_threshold
+
+
+
+
+
+
+            #for face_landmarks in results.face_landmarks:
+                #for lm in face_landmarks:
+                    #cx, cy = int(lm.x * w), int(lm.y * h)
+                    #cv2.circle(frame, (cx, cy), 1, (0, 255, 0), -1)
 
         cv2.imshow("phase 1 : Face Mesh", frame)
 
