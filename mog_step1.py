@@ -18,6 +18,11 @@ options = vision.FaceLandmarkerOptions(
 def get_pixel_coords(landmark, width, height):
     return np.array([landmark.x * width, landmark.y * height])
 
+def apply_mog_shader(frame, landmarks, w, h):
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    clahe = cv2.createCLAHE(clipLimit=4.0, tileGridSize=(8, 8))
+    high_contrast = clahe.apply(gray)
+
 mog_threshold = 0.37
 
 # 2. landmarker webcam
