@@ -75,20 +75,36 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             cv2.circle(frame, pt_mouth_r, 4, status_color, -1)
 
             #5. telemetry readout
+            status_text = (
+                "STATE: MOGGING" IF is_mogging else "STATE: CHOPPED"
+            )
+            cv2.putText(
+                frame,
+                status_text,
+                (20,45),
+                cv2.FONT_HERSHEY_DUPLEX,
+                0.9,
+                status_color,
+                2,
+            )
+            cv2.putText(
+                frame,
+                f"Ratio: {mog_ratio:.3f} | Target < {mog_threshold:.3f} (W/S to tune)",
+                (20, h - 20),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (255, 255, 255),
+                2,
+            )
+        cv2.imshow("Phase 2: Geometry Engine", frame)
 
-
-
-
-
-
-            #for face_landmarks in results.face_landmarks:
-                #for lm in face_landmarks:
-                    #cx, cy = int(lm.x * w), int(lm.y * h)
-                    #cv2.circle(frame, (cx, cy), 1, (0, 255, 0), -1)
-
-        cv2.imshow("phase 1 : Face Mesh", frame)
-
-        if cv2.waitKey(1) & 0xFF == ord("q"):
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord("q"):
             break
+        elif key == ord("w"):
+            mog_threshold += 0.005
+        elif key == ord("s"):
+            mog_threshold -= 0.005
+
     cap.release()
     cv2.destroyAllWindows()
