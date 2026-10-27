@@ -1,6 +1,7 @@
 import time
 import cv2
 import mediapipe as mp
+import numpy as np
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
@@ -13,6 +14,11 @@ options = vision.FaceLandmarkerOptions(
     min_face_detection_confidence=0.6,
     min_tracking_confidence=0.6,
 )
+
+def get_pixel_coords(landmark, width, height):
+    return np.array([landmark.x * width, landmark.y * height])
+
+mog_threshold = 0.37
 
 # 2. landmarker webcam
 with vision.FaceLandmarker.create_from_options(options) as landmarker:
