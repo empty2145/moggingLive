@@ -59,6 +59,23 @@ with vision.FaceLandmarker.create_from_options(options) as landmarker:
             mog_ratio = mouth_width / (cheek_width + 1e-6)
             is_mogging = mog_ratio < mog_threshold
 
+            #4. convert to cv2 format with tuple of ints
+            pt_cheek_l, pt_cheek_r = tuple(cheek_l.astype(int)), tuple(cheek_r.astype(int))
+            pt_mouth_l, pt_mouth_r = tuple(mouth_l.astype(int)), tuple(mouth_r.astype(int))
+
+            # cheekbone baseline cyan
+            cv2.line(frame, pt_cheek_l, pt_cheek_r, (255, 255, 0), 2)
+            cv2.circle(frame, pt_cheek_l, 4, (255, 255, 0), -1)
+            cv2.circle(frame, pt_cheek_r, 4, (255, 255, 0), -1)
+
+            # mouth vector: green if mogging, red if relaxed
+            status_color = (0, 255, 0) if is_mogging else (0, 0, 255)
+            cv2.line(frame, pt_mouth_l, pt_mouth_r, status_color, 3)
+            cv2.circle(frame, pt_mouth_l, 4, status_color, -1)
+            cv2.circle(frame, pt_mouth_r, 4, status_color, -1)
+
+            #5. telemetry readout
+
 
 
 
