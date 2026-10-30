@@ -19,9 +19,18 @@ def get_pixel_coords(landmark, width, height):
     return np.array([landmark.x * width, landmark.y * height])
 
 def apply_mog_shader(frame, landmarks, w, h):
+    # 1.grayscale clahe for jawline and shadow carving
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     clahe = cv2.createCLAHE(clipLimit=4.0, tileGridSize=(8, 8))
     high_contrast = clahe.apply(gray)
+    # 2.unsharp masking for aggresive texture
+    blurred = cv2.GaussianBlur(high_contrast, (0, 0), sigmaX=3.0)
+    sharpened = cv2.addWeighted(high_contrast, 2.2, blurred, -1.2, 0)
+    edit = cv2.cvtColor(sharpened, cv2.COLOR_GRAY2BGR)
+
+    # 3.Radial vignette mask
+
+
 
 mog_threshold = 0.37
 
