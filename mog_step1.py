@@ -23,12 +23,22 @@ def apply_mog_shader(frame, landmarks, w, h):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     clahe = cv2.createCLAHE(clipLimit=4.0, tileGridSize=(8, 8))
     high_contrast = clahe.apply(gray)
+    
     # 2.unsharp masking for aggresive texture
     blurred = cv2.GaussianBlur(high_contrast, (0, 0), sigmaX=3.0)
     sharpened = cv2.addWeighted(high_contrast, 2.2, blurred, -1.2, 0)
     edit = cv2.cvtColor(sharpened, cv2.COLOR_GRAY2BGR)
 
     # 3.Radial vignette mask
+    kernel_x = cv2.getGaussianKernel(w, int(w * 0.45))
+    kernel_y = cv2.getGaussianKernel(h, int(h * 0.45))
+    vignette = kernel_y * kernel_x.T
+    vignette = vignette / vignette.max()
+
+    for c in range(3):
+        edit[:, :, c] = (edit[:, :, c] * vignette).astype(np.uint8)
+
+    #
 
 
 
